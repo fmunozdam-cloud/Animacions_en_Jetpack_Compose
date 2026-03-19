@@ -1,6 +1,7 @@
 package campalans.m8.animacionsenjetpackcompose
 
 import android.os.Bundle
+import android.widget.ImageView
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
@@ -8,9 +9,11 @@ import androidx.compose.animation.AnimatedContent
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.core.Animatable
 import androidx.compose.animation.core.tween
+import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
@@ -20,21 +23,30 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableFloatStateOf
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.drawBehind
+import androidx.compose.ui.geometry.Offset
+import androidx.compose.ui.geometry.Rect
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.Path
+import androidx.compose.ui.graphics.drawscope.clipPath
 import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.layout.layoutId
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.viewinterop.AndroidView
 import androidx.constraintlayout.compose.ExperimentalMotionApi
 import androidx.constraintlayout.compose.MotionLayout
 import campalans.m8.animacionsenjetpackcompose.ui.theme.AnimacionsEnJetpackComposeTheme
 import androidx.constraintlayout.compose.ConstraintSet
+import androidx.vectordrawable.graphics.drawable.AnimatedVectorDrawableCompat
 import kotlinx.coroutines.delay
 
 
@@ -44,8 +56,8 @@ class MainActivity : ComponentActivity() {
         enableEdgeToEdge()
         setContent {
             AnimacionsEnJetpackComposeTheme {
-                Greeting( )
-
+                AnimationExample( )
+                Tasca()
             }
         }
     }
@@ -53,9 +65,14 @@ class MainActivity : ComponentActivity() {
 
 @OptIn(ExperimentalMotionApi::class)
 @Composable
-fun Greeting() {
+fun Tasca()
+{
 
+}
 
+@OptIn(ExperimentalMotionApi::class)
+@Composable
+fun AnimationExample() {
 
     LazyColumn (modifier = Modifier
         .padding(24.dp)
@@ -122,7 +139,7 @@ fun Greeting() {
             }
 
             //Quart exemple
-            var rotation by remember { mutableStateOf(0f) }
+            var rotation by remember { mutableFloatStateOf(0f) }
 
             LaunchedEffect(Unit) {
                 while (true) {
@@ -139,29 +156,60 @@ fun Greeting() {
             )
             // Rotate, scale, or translate composables.
 
-
             //Cinqué exemple
-
+            Box(
+                Modifier
+                    .size(120.dp)
+                    .drawBehind {
+                        drawCircle(Color.Red, radius = size.minDimension / 2)
+                    }
+            ) {
+                Text("Inside Circle", modifier = Modifier.align(Alignment.Center))
+            }
 
 
             //Sisé exemple
 
+            val context = LocalContext.current
+            val animatedDrawable = remember {
+                AnimatedVectorDrawableCompat.create(
+                    context,
+                    R.drawable.animated_check
+                )
+            }
 
+            AndroidView(factory = {
+                ImageView(it).apply {
+                    setImageDrawable(animatedDrawable)
+                    animatedDrawable?.start()
+                }
+            })
+            // Create .avd files using [Android Studio Vector Asset tool].
 
             //Seté exemple
+            val radius = remember { Animatable(0f) }
 
+            LaunchedEffect(Unit) {
+                radius.animateTo(500f, tween(1000))
+            }
+
+            Canvas(modifier = Modifier.fillMaxSize()) {
+                clipPath(Path().apply {
+                    addOval(Rect(center = Offset(size.width / 2, size.height / 2), radius = radius.value))
+                } as Path) {
+                    drawRect(Color.Cyan)
+                }
+            }
         }
     }
-
-
-
 }
+
 
 
 @Preview(showBackground = true)
 @Composable
 fun GreetingPreview() {
     AnimacionsEnJetpackComposeTheme {
-        Greeting()
+        AnimationExample()
     }
 }
