@@ -93,7 +93,8 @@ fun AnimationExample() {
                 }
             }
             // Works well for fade, slide, expand/shrink animations.
-
+        }
+        item {
             //Segon exemple
             var count by remember { mutableIntStateOf(0) }
             Column(horizontalAlignment = Alignment.CenterHorizontally) {
@@ -105,7 +106,8 @@ fun AnimationExample() {
                     Text("Count: $targetCount")
                 }
             }
-
+        }
+        item {
             //Tercer exemple
             val progress = remember { Animatable(0f) }
 
@@ -137,7 +139,8 @@ fun AnimationExample() {
                         .layoutId("box")
                 )
             }
-
+        }
+        item {
             //Quart exemple
             var rotation by remember { mutableFloatStateOf(0f) }
 
@@ -155,7 +158,8 @@ fun AnimationExample() {
                     .background(Color.Green)
             )
             // Rotate, scale, or translate composables.
-
+        }
+        item {
             //Cinqué exemple
             Box(
                 Modifier
@@ -166,8 +170,10 @@ fun AnimationExample() {
             ) {
                 Text("Inside Circle", modifier = Modifier.align(Alignment.Center))
             }
+        }
 
-
+        /*
+        item{
             //Sisé exemple
 
             val context = LocalContext.current
@@ -185,7 +191,10 @@ fun AnimationExample() {
                 }
             })
             // Create .avd files using [Android Studio Vector Asset tool].
+        }
+        */
 
+        item {
             //Seté exemple
             val radius = remember { Animatable(0f) }
 
@@ -200,6 +209,7 @@ fun AnimationExample() {
                     drawRect(Color.Cyan)
                 }
             }
+
         }
     }
 }
