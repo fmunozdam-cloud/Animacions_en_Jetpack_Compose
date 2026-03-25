@@ -57,7 +57,7 @@ class MainActivity : ComponentActivity() {
         setContent {
             AnimacionsEnJetpackComposeTheme {
                 AnimationExample( )
-                Tasca()
+                //Tasca()
             }
         }
     }
@@ -67,7 +67,54 @@ class MainActivity : ComponentActivity() {
 @Composable
 fun Tasca()
 {
+    LazyColumn (modifier = Modifier
+        .padding(24.dp)
+        .fillMaxWidth()
+    )
+    {
+        // Un botó animat que permeti mostrar i amagar la part d'animacions de l'aplicació.
+        item {
+            var visible by remember { mutableStateOf(true) }
+            Column {
+                Button(onClick = { visible = !visible }) {
+                    Text(if (visible) "Hide" else "Show")
+                }
 
+                AnimatedVisibility(visible) {
+                    Text("This text animates in/out")
+                }
+            }
+        }
+
+        // Un cercle creat en temps d'execució amb el vostre nom a l'interior que roti en sentit horari i el fons vagi canviant de color infinitament de blanc a negre.
+        item {
+            var rotation by remember { mutableFloatStateOf(0f) }
+
+            LaunchedEffect(Unit) {
+                while (true) {
+                    delay(16)
+                    rotation += 2f
+                }
+            }
+
+            Box(
+                Modifier
+                    .size(120.dp)
+                    .graphicsLayer(rotationZ = rotation)
+                    .drawBehind {
+                        drawCircle(Color.Red, radius = size.minDimension / 2)
+                    }
+            ) {
+                Text("Inside Circle", modifier = Modifier.align(Alignment.Center))
+            }
+        }
+
+        //Afegeix una animació amb moviment de translació.
+        item {
+
+        }
+
+    }
 }
 
 @OptIn(ExperimentalMotionApi::class)
