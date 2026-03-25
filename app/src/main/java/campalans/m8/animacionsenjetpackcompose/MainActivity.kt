@@ -1,12 +1,12 @@
 package campalans.m8.animacionsenjetpackcompose
 
 import android.os.Bundle
-import android.widget.ImageView
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.compose.animation.AnimatedContent
 import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.animateColorAsState
 import androidx.compose.animation.core.Animatable
 import androidx.compose.animation.core.tween
 import androidx.compose.foundation.Canvas
@@ -38,15 +38,12 @@ import androidx.compose.ui.graphics.Path
 import androidx.compose.ui.graphics.drawscope.clipPath
 import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.layout.layoutId
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.viewinterop.AndroidView
 import androidx.constraintlayout.compose.ExperimentalMotionApi
 import androidx.constraintlayout.compose.MotionLayout
 import campalans.m8.animacionsenjetpackcompose.ui.theme.AnimacionsEnJetpackComposeTheme
 import androidx.constraintlayout.compose.ConstraintSet
-import androidx.vectordrawable.graphics.drawable.AnimatedVectorDrawableCompat
 import kotlinx.coroutines.delay
 
 
@@ -82,32 +79,50 @@ fun Tasca()
 
                 AnimatedVisibility(visible) {
                     // Un cercle creat en temps d'execució amb el vostre nom a l'interior que roti en sentit horari i el fons vagi canviant de color infinitament de blanc a negre.
+                    //Afegeix una animació amb moviment de translació.
                     Column {
 
                         var rotation by remember { mutableFloatStateOf(0f) }
+                        var position by remember { mutableFloatStateOf(0f) }
+                        var increment by remember { mutableStateOf(true) }
+                        var isBlack by remember { mutableStateOf(true) }
+                        val animatedColor by animateColorAsState(
+                            targetValue = if (isBlack) Color.Black else Color.White,
+                            animationSpec = tween(durationMillis = 1000)
+                        )
 
                         LaunchedEffect(Unit) {
                             while (true) {
                                 delay(16)
                                 rotation += 2f
+
+                                if ( position < 50 && increment)
+                                    position += 2f
+                                else if (position >= 0)
+                                {
+                                    position -= 2f
+                                    increment = false
+                                }
+                                else
+                                    increment = true
+
+                                while (true) {
+                                    delay(1000)
+                                    isBlack = !isBlack
+                                }
                             }
                         }
 
                         Box(
                             Modifier
                                 .size(120.dp)
-                                .graphicsLayer(rotationZ = rotation)
+                                .graphicsLayer(rotationZ = rotation, translationX = position)
                                 .drawBehind {
-                                    drawCircle(Color.Red, radius = size.minDimension / 2)
+                                    drawCircle(animatedColor, radius = size.minDimension / 2)
                                 }
                         ) {
                             Text("Inside Circle", modifier = Modifier.align(Alignment.Center))
                         }
-
-                    }
-                    //Afegeix una animació amb moviment de translació.
-                    Column {
-
 
                     }
                 }
