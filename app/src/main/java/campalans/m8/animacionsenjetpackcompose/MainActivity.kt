@@ -56,8 +56,8 @@ class MainActivity : ComponentActivity() {
         enableEdgeToEdge()
         setContent {
             AnimacionsEnJetpackComposeTheme {
-                AnimationExample( )
-                //Tasca()
+                //AnimationExample( )
+                Tasca()
             }
         }
     }
@@ -81,37 +81,37 @@ fun Tasca()
                 }
 
                 AnimatedVisibility(visible) {
-                    Text("This text animates in/out")
-                }
-            }
-        }
+                    // Un cercle creat en temps d'execució amb el vostre nom a l'interior que roti en sentit horari i el fons vagi canviant de color infinitament de blanc a negre.
+                    Column {
 
-        // Un cercle creat en temps d'execució amb el vostre nom a l'interior que roti en sentit horari i el fons vagi canviant de color infinitament de blanc a negre.
-        item {
-            var rotation by remember { mutableFloatStateOf(0f) }
+                        var rotation by remember { mutableFloatStateOf(0f) }
 
-            LaunchedEffect(Unit) {
-                while (true) {
-                    delay(16)
-                    rotation += 2f
-                }
-            }
+                        LaunchedEffect(Unit) {
+                            while (true) {
+                                delay(16)
+                                rotation += 2f
+                            }
+                        }
 
-            Box(
-                Modifier
-                    .size(120.dp)
-                    .graphicsLayer(rotationZ = rotation)
-                    .drawBehind {
-                        drawCircle(Color.Red, radius = size.minDimension / 2)
+                        Box(
+                            Modifier
+                                .size(120.dp)
+                                .graphicsLayer(rotationZ = rotation)
+                                .drawBehind {
+                                    drawCircle(Color.Red, radius = size.minDimension / 2)
+                                }
+                        ) {
+                            Text("Inside Circle", modifier = Modifier.align(Alignment.Center))
+                        }
+
                     }
-            ) {
-                Text("Inside Circle", modifier = Modifier.align(Alignment.Center))
+                    //Afegeix una animació amb moviment de translació.
+                    Column {
+
+
+                    }
+                }
             }
-        }
-
-        //Afegeix una animació amb moviment de translació.
-        item {
-
         }
 
     }
